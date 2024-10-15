@@ -1,9 +1,12 @@
 const express = require("express");
 const app = express();
-const { Restaurant } = require("../models");
+
+const restaurantsRouter = require("../routes/restaurants");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use("/restaurants", restaurantsRouter);
 
 app.get("/restaurants", async (req, res) => {
     const restaurants = await Restaurant.findAll();

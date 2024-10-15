@@ -1,6 +1,6 @@
 const app = require("./src/app");
 const sequelize = require("./db/connection");
-const port = 3000;
+const port = 3003;
 
 app.listen(port, async () => {
     try {
