@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "seed": "node seed.js",
-    "test": "jest --watch"
+    "test": "jest --watchAll"
   },
   "keywords": [],
   "author": "",
@@ -17,5 +17,8 @@
     "path": "^0.12.7",
     "sequelize": "^6.37.4",
     "sqlite3": "^5.0.11"
+  },
+  "devDependencies": {
+    "supertest": "^7.0.0"
   }
 }
