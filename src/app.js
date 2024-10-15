@@ -34,5 +34,21 @@ app.delete("/restaurants/:id", async (req, res) => {
     res.json(deletedRest);
 });
 
+app.get("/restaurants", async (req, res) => {
+    try {
+        const restaurants = await Restaurant.findAll({
+            include: [{
+                model: Menu,
+                include: [{
+                    model: Item // Include Items from the Menu
+                }]
+            }]
+        });
+        res.json(restaurants);
+    } catch (error) {
+        res.status(500).json({ error: 'Unable to fetch restaurants' });
+    }
+});
+
 module.exports = app;
 
