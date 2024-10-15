@@ -1,15 +1,13 @@
-const app = require("./src/app")
-const db = require("./db/connection");
-const Restaurant = require("./models");
+const app = require("./src/app");
+const sequelize = require("./db/connection");
 const port = 3000;
 
-//TODO: Create your GET Request Route Below: 
-app.get('/restaurants', async(req, res) => {
-    const restaurants = await Restaurant.findAll();
-    res.json(restaurants);
-})
+app.listen(port, async () => {
+    try {
+        await sequelize.sync();
+        console.log(`Database synced and server is listening at http://localhost:${port}/restaurants`);
+    } catch (error) {
+        console.error('Unable to sync the database:', error);
+    }
+});
 
-app.listen(port, () => {
-    db.sync();
-    console.log(`Listening at http://localhost:${port}/restaurants`);
-})
