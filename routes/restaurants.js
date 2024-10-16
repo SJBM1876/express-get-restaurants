@@ -1,4 +1,5 @@
 const express = require("express");
+const { body, validationResult } = require("express-validator");
 const router = express.Router();
 const { Restaurant } = require("../models");
 
@@ -26,15 +27,28 @@ router.get("/:id", async (req, res) => {
     }
 });
 
-// Create a new restaurant
-router.post("/", async (req, res) => {
-    try {
-        const restaurant = await Restaurant.create(req.body);
-        res.status(201).json(restaurant);
-    } catch (error) {
-        res.status(400).json({ error: 'Unable to create restaurant' });
+// Create a new restaurant with validation
+router.post(
+    "/",
+    [
+        body("name").trim().notEmpty().withMessage("Name must not be empty"),
+        body("location").trim().notEmpty().withMessage("Location must not be empty"),
+        body("cuisine").trim().notEmpty().withMessage("Cuisine must not be empty"),
+    ],
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        try {
+            const restaurant = await Restaurant.create(req.body);
+            res.status(201).json(restaurant);
+        } catch (error) {
+            res.status(400).json({ error: 'Unable to create restaurant' });
+        }
     }
-});
+);
 
 // Update a restaurant by ID
 router.put("/:id", async (req, res) => {
