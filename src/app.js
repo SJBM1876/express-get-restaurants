@@ -1,5 +1,5 @@
 const express = require("express");
-const { check, validationResult } = require('express-validator');
+const { check, validationResult, isByteLength } = require('express-validator');
 const app = express();
 
 const restaurantsRouter = require("../routes/restaurants");
@@ -10,14 +10,17 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/restaurants", restaurantsRouter);
 
 // Validation middleware for POST /restaurants
+
 const validateRestaurant = [
   check('name').not().isEmpty().withMessage('Name must not be empty'),
+  check('name').isByteLength({ min: 10, max: 30 }).withMessage('Name must be between 10 and 30 characters'),
   check('location').not().isEmpty().withMessage('Location must not be empty'),
   check('cuisine').not().isEmpty().withMessage('Cuisine must not be empty'),
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      console.log("Validation errors:", errors.array());
+      res.status(400).json({ errors: errors.array() });
     }
     next();
   }

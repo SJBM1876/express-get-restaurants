@@ -31,7 +31,10 @@ router.get("/:id", async (req, res) => {
 router.post(
     "/",
     [
-        body("name").trim().notEmpty().withMessage("Name must not be empty"),
+        body("name")
+            .trim()
+            .notEmpty().withMessage("Name must not be empty")
+            .isLength({ min: 10, max: 30 }).withMessage("Name must be between 10 and 30 characters long"),
         body("location").trim().notEmpty().withMessage("Location must not be empty"),
         body("cuisine").trim().notEmpty().withMessage("Cuisine must not be empty"),
     ],
