@@ -6,6 +6,50 @@ const path = require('path');
 describe('Restaurants API', () => {
   let restaurantId;
 
+  describe('POST /restaurants name length validation', () => {
+    it('should return an error if name is less than 10 characters', async () => {
+      const newRestaurant = { name: 'Short', location: 'New Location', cuisine: 'New Cuisine' };
+      const response = await request(app)
+        .post('/restaurants')
+        .send(newRestaurant);
+
+      expect(response.status).toBe(400);
+      expect(response.body.errors).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            location: 'body',
+            msg: 'Name must be at least 10 characters',
+            path: 'name',
+            value: "Short",
+            type: 'field'
+          })
+        ])
+      );
+    });
+
+    it('should return an error if name is more than 30 characters', async () => {
+      const longName = 'This is a very long restaurant name that is more than 30 characters';
+      const newRestaurant = { name: longName, location: 'New Location', cuisine: 'New Cuisine' };
+      const response = await request(app)
+        .post('/restaurants')
+        .send(newRestaurant);
+
+      expect(response.status).toBe(400);
+      expect(response.body.errors).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            location: 'body',
+            msg: 'Name must not be more than 30 characters',
+            path: 'name',
+            value: longName,
+            type: 'field'
+          })
+        ])
+      );
+    });
+  });
+
+
   // Test GET /restaurants
   it('should return status code 200 for GET /restaurants', async () => {
     const response = await request(app).get('/restaurants');
@@ -186,5 +230,8 @@ describe('Restaurants API', () => {
     expect(deletedRestaurant.status).toBe(404); // Not found
     expect(deletedRestaurant.body.error).toBe('Restaurant not found');
   });
+
 });
+
+
 
